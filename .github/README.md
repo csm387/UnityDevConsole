@@ -8,3 +8,24 @@ Download directly from the releases tab & import in Unity (Assets>Import Package
 Import via the Unity package manager (Window>Package Manager).
 Git URL: https://github.com/sexeee/UnityDevConsole.git
 <img src="/.github/install.png" alt="Package manager install" width="25%"></src>
+
+#### Custom commands
+```cs
+    public static ConsoleCommand<int> TEST_COMMAND;
+
+    private void Awake()
+    {
+        TEST_COMMAND = new ConsoleCommand("test", "test command", "test <ammount>", (value) =>
+        {
+            Test(value);
+        });
+    }
+
+    public class DevConsole : MonoBehaviour
+    {
+            commandList = new List<object>
+            {
+                TEST_COMMAND,
+                //OTHER COMMANDS
+            };
+    }
