@@ -20,12 +20,13 @@ Git URL: https://github.com/sexeee/UnityDevConsole.git
             Test(value);
         });
     }
+```
 
-    public class DevConsole : MonoBehaviour
+Add to DevConsole.cs
+```cs
+    commandList = new List<object>
     {
-            commandList = new List<object>
-            {
-                TEST_COMMAND,
-                //OTHER COMMANDS
-            };
+        //OTHER COMMANDS
+        TEST_COMMAND,
     }
+```
