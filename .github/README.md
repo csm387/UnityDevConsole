@@ -24,9 +24,12 @@ Git URL: https://github.com/sexeee/UnityDevConsole.git
 
 Add to DevConsole.cs
 ```cs
-    commandList = new List<object>
+    private void Awake()
     {
-        //OTHER COMMANDS
-        TEST_COMMAND,
+        commandList = new List<object>
+        {
+            //OTHER COMMANDS
+            TEST_COMMAND,
+        }
     }
 ```
