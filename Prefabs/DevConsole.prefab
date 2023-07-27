@@ -681,7 +681,6 @@ GameObject:
   - component: {fileID: 5426148197286978189}
   - component: {fileID: 3405731873241487192}
   - component: {fileID: 3658038545344738838}
-  - component: {fileID: 9216129794919398992}
   m_Layer: 5
   m_Name: DevConsole
   m_TagString: Untagged
@@ -794,19 +793,7 @@ MonoBehaviour:
   outputText: {fileID: 8118740506180285034, guid: f8c5be6b393190b4eb6a3ea319c5445b, type: 3}
   autoCompleteBg: {fileID: 6675177870651886924}
   autoComplete: {fileID: 7425438229704507177}
---- !u!114 &9216129794919398992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4159439332029395741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2903ea0d08fa3fc4fbbb6b75d83ccbce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testint: 0
+  testInt: 0
 --- !u!1 &5042949360977588489
 GameObject:
   m_ObjectHideFlags: 0
@@ -928,7 +915,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 871535921936913383}
   m_HandleRect: {fileID: 7435929122902002112}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1272,7 +1259,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &590677404739836788
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1706,7 +1693,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0000024953863}
+  m_AnchoredPosition: {x: 0, y: -0.0004246414}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8622167819607549622

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace sexee.DevConsole
 {
@@ -27,6 +28,10 @@ namespace sexee.DevConsole
         public static ConsoleCommand HELP_COMMAND;
         public static ConsoleCommand CLEAR_COMMAND;
         public static ConsoleCommand<string> LOG_COMMAND;
+        public static ConsoleCommand<int> INT_COMMAND;
+
+
+        public int testInt;
         private void Start()
         {
             console.SetActive(showConsole);
@@ -45,15 +50,27 @@ namespace sexee.DevConsole
             LOG_COMMAND = new ConsoleCommand<string>("log", "log a message", "log <message>", (value) =>
             {
                     Log(value);
-            });   
+            });
+            INT_COMMAND = new ConsoleCommand<int>("int", "log an integer", "int <value>", (value) =>
+            {
+                Int(value);
+            });
+
 
             commandList = new List<object>
             {
                 HELP_COMMAND,
                 CLEAR_COMMAND,
                 LOG_COMMAND,
+                INT_COMMAND,
             };
 
+        }
+
+        void Int(int value)
+        {
+            testInt = value;
+            Log(value);
         }
 
         private void Update()
@@ -87,13 +104,42 @@ namespace sexee.DevConsole
                         {
                             (commandList[i] as ConsoleCommand).Invoke();
                         }
+                        else if (commandList[i] as ConsoleCommand<int> != null && properties.Length > 1)
+                        {
+                            if (int.TryParse(properties[1], out int proprieti))
+                            {
+                                (commandList[i] as ConsoleCommand<int>).Invoke(proprieti);
+                            }
+                            else
+                            {
+                                ErrorLog("Invalid integer value provided: " + properties[1]);
+                            }                        
+                        }  
                         else if (commandList[i] as ConsoleCommand<string> != null && properties.Length > 1)
                         {
                             (commandList[i] as ConsoleCommand<string>).Invoke(properties[1]);
                         }
-                        else if (commandList[i] as ConsoleCommand<int> != null && properties.Length == 1)
+                        else if (commandList[i] as ConsoleCommand<bool> != null && properties.Length > 1)
                         {
-                            (commandList[i] as ConsoleCommand<int>).Invoke(int.Parse(properties[1]));
+                            if (bool.TryParse(properties[1], out bool proprieti))
+                            {
+                                (commandList[i] as ConsoleCommand<bool>).Invoke(proprieti);
+                            }
+                            else
+                            {
+                                ErrorLog("Invalid bool value provided: " + properties[1]);
+                            }             
+                        }
+                        else if (commandList[i] as ConsoleCommand<float> != null && properties.Length > 1)
+                        {
+                            if (float.TryParse(properties[1], out float proprieti))
+                            {
+                                (commandList[i] as ConsoleCommand<float>).Invoke(proprieti);
+                            }
+                            else
+                            {
+                                ErrorLog("Invalid float value provided: " + properties[1]);
+                            }
                         }
                     }
                 }
@@ -114,6 +160,7 @@ namespace sexee.DevConsole
             if (string.IsNullOrEmpty(input)) 
             {
                 autoComplete.text = "";
+                autoCompleteBg.SetActive(false);
                 return; 
             }
             string matchingCommandsText = GetMatchingCommandsText(input);
@@ -130,23 +177,25 @@ namespace sexee.DevConsole
             }
 
             bool foundMatchingCommands = false;
-
+            autoCompleteBg.SetActive(false);
             for (int i = 0; i < commandList.Count; i++)
             {
                 ConsoleCommandBase command = commandList[i] as ConsoleCommandBase;
                 if (command.CommandId.Contains(input))
                 {
                     foundMatchingCommands = true;
-                    sb.AppendLine(command.CommandId); // Append the matching command to the StringBuilder
+                    sb.AppendLine(command.CommandId + " " + command.CurrentValue); // Append the matching command to the StringBuilder
                 }
             }
 
             if (foundMatchingCommands)
             {
+                autoCompleteBg.SetActive(true);
                 return sb.ToString();
             }
             else
             {
+                autoCompleteBg.SetActive(false);
                 return "No matching commands found.";
             }
         }
@@ -169,19 +218,26 @@ namespace sexee.DevConsole
             }       
         }
 
-        void Log(object log)
+        public void Log(object log)
         {
             GameObject go = Instantiate(outputText, outputparent.transform);
             string label = log.ToString();
 
             go.GetComponentInChildren<TMP_Text>().text = label;
-        }  
-        void WarningLog(object log)
+        }
+        public void WarningLog(object log)
         {
             GameObject go = Instantiate(outputText, outputparent.transform);
             string label = log.ToString();
 
             go.GetComponentInChildren<TMP_Text>().text = $"<color=#fafa37>{log}</color>";
+        }    
+        public void ErrorLog(object log)
+        {
+            GameObject go = Instantiate(outputText, outputparent.transform);
+            string label = log.ToString();
+
+            go.GetComponentInChildren<TMP_Text>().text = $"<color=#FF0000>{log}</color>";
         }    
 
         void Clear()

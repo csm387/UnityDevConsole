@@ -8,7 +8,14 @@ public class ConsoleCommandBase
     private string _commandId;
     private string _commandDescription;
     private string _commandFormat;
-    
+    // New property to hold the current value
+    private object _currentValue;
+
+    public object CurrentValue
+    {
+        get { return _currentValue; }
+        set { _currentValue = value; }
+    }
 
     public string CommandId { get { return _commandId; } }
     public string CommandDescription { get { return _commandDescription; } }
@@ -47,6 +54,9 @@ public class ConsoleCommand<T1> : ConsoleCommandBase
 
     public void Invoke(T1 value)
     {
+        // Set the current value to be used later if needed
+        CurrentValue = value;
+
         command.Invoke(value);
     }
 }
