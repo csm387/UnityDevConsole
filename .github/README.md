@@ -1,6 +1,8 @@
 # UnityDevConsole
 This asset provides an in-game developer console (debug console) for Unity projects, allowing developers or players to execute commands!
 
+**Links:** [Discord](https://discord.gg/t3H9NMFTEc)
+
 # Setup
 Simply import the package into your project and you're good to go. No additional setup is required.
 
