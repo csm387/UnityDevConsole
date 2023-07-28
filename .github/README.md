@@ -17,7 +17,7 @@ Git URL: https://github.com/sexeee/UnityDevConsole.git
 
     private void Awake()
     {
-        TEST_COMMAND = new ConsoleCommand("test", "test command", "test <ammount>", (value) =>
+        TEST_COMMAND = new ConsoleCommand<int>("test", "test command", "test <ammount>", (value) =>
         {
             Test(value);
         });
