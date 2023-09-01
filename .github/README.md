@@ -13,25 +13,9 @@ Git URL: https://github.com/sexeee/UnityDevConsole.git
 
 #### Custom commands
 ```cs
-    public static ConsoleCommand<int> TEST_COMMAND;
-
-    private void Awake()
+    [ConsoleCommandAttribute("addhp", "Add hp to player", "addhp", ParameterType.INT)]
+    public static void Add(int parameter)
     {
-        TEST_COMMAND = new ConsoleCommand<int>("test", "test command", "test <ammount>", (value) =>
-        {
-            Test(value);
-        });
-    }
-```
-
-Add to DevConsole.cs
-```cs
-    private void Awake()
-    {
-        commandList = new List<object>
-        {
-            //OTHER COMMANDS
-            TEST_COMMAND,
-        }
+        hp += parameter;
     }
 ```
