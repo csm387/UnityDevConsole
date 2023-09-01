@@ -1,7 +1,30 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public class ConsoleCommandAttribute : Attribute
+{
+    public string Id { get; }
+    public string Description { get; }
+    public string Format { get; }
+    public ParameterType Parameter { get; }
+
+    public ConsoleCommandAttribute(string id, string description, string format, ParameterType parameter = ParameterType.NULL)
+    {
+        Id = id;
+        Description = description;
+        Format = format;
+        Parameter = parameter;
+    }
+}
+
+public enum ParameterType
+{
+    NULL,
+    INT,
+    FLOAT,
+    BOOL,
+    STRING
+}
 
 public class ConsoleCommandBase
 {

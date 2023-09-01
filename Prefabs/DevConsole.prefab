@@ -789,11 +789,10 @@ MonoBehaviour:
   IsEnabled: 1
   console: {fileID: 7954178758168043751}
   inputField: {fileID: 5238495447184106215}
-  outputparent: {fileID: 8902452924646548005}
-  outputText: {fileID: 8118740506180285034, guid: f8c5be6b393190b4eb6a3ea319c5445b, type: 3}
+  _outputparent: {fileID: 8902452924646548005}
+  _outputText: {fileID: 8118740506180285034, guid: f8c5be6b393190b4eb6a3ea319c5445b, type: 3}
   autoCompleteBg: {fileID: 6675177870651886924}
   autoComplete: {fileID: 7425438229704507177}
-  testInt: 0
 --- !u!1 &5042949360977588489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1693,7 +1692,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0004246414}
+  m_AnchoredPosition: {x: 0, y: -0.00007239116}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8622167819607549622

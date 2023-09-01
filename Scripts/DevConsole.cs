@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using TMPro;
 using System.Text;
-using Newtonsoft.Json.Linq;
+using System.Reflection;
+using System;
 
 namespace sexee.DevConsole
 {
@@ -19,58 +18,156 @@ namespace sexee.DevConsole
         public TMP_InputField inputField;
         string input;
 
-        public List<object> commandList;
+        public static List<object> commandList;
 
-        public GameObject outputparent;
-        public GameObject outputText;
+        static GameObject outputparent;
+        static GameObject outputText;
+        public GameObject _outputparent;
+        public GameObject _outputText;
+
         public GameObject autoCompleteBg;
         public TMP_Text autoComplete;
-        public static ConsoleCommand HELP_COMMAND;
-        public static ConsoleCommand CLEAR_COMMAND;
-        public static ConsoleCommand<string> LOG_COMMAND;
-        public static ConsoleCommand<int> INT_COMMAND;
-
-
-        public int testInt;
         private void Start()
         {
             console.SetActive(showConsole);
+
+            outputparent = _outputparent;
+            outputText = _outputText;
         }
 
         private void Awake()
         {
-            HELP_COMMAND = new ConsoleCommand("help", "Shows a list of commands", "help", () =>
-            {
-                ShowHelp();
-            });
-            CLEAR_COMMAND = new ConsoleCommand("clear", "Clear the console", "clear", () =>
-            {
-                Clear();
-            });   
-            LOG_COMMAND = new ConsoleCommand<string>("log", "log a message", "log <message>", (value) =>
-            {
-                    Log(value);
-            });
-            INT_COMMAND = new ConsoleCommand<int>("int", "log an integer", "int <value>", (value) =>
-            {
-                Int(value);
-            });
-
-
-            commandList = new List<object>
-            {
-                HELP_COMMAND,
-                CLEAR_COMMAND,
-                LOG_COMMAND,
-                INT_COMMAND,
-            };
-
+            AddCommandsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         }
-
-        void Int(int value)
+        public void AddCommandsFromAssemblies(Assembly[] assemblies)
         {
-            testInt = value;
-            Log(value);
+            commandList = new List<object>();
+
+            foreach (var assembly in assemblies)
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    //object instance = Activator.CreateInstance(type);
+                    MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                    foreach (MethodInfo method in methods)
+                    {
+                        ConsoleCommandAttribute attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
+
+                        if (attribute != null)
+                        {                       
+                            if (method.GetParameters().Length == 1 || method.GetParameters().Length == 0)
+                            {
+                                if (method.IsStatic)
+                                {
+                                    switch (attribute.Parameter)
+                                    {
+                                        case ParameterType.NULL:
+                                            ConsoleCommand nullcommand = new ConsoleCommand(attribute.Id, attribute.Description, attribute.Format, () =>
+                                            {
+                                                method.Invoke(null, null);
+                                            });
+
+                                            commandList.Add(nullcommand);
+                                            break;
+                                        case ParameterType.INT:
+                                            ConsoleCommand<int> intcommand = new ConsoleCommand<int>(attribute.Id, attribute.Description, attribute.Format, (int parameter) =>
+                                            {
+                                                method.Invoke(null, new object[] { parameter });
+                                            });
+
+                                            commandList.Add(intcommand);
+                                            break;
+                                        case ParameterType.FLOAT:
+                                            ConsoleCommand<float> floatcommand = new ConsoleCommand<float>(attribute.Id, attribute.Description, attribute.Format, (float parameter) =>
+                                            {
+                                                method.Invoke(null, new object[] { parameter });
+                                            });
+
+                                            commandList.Add(floatcommand);
+                                            break;
+                                        case ParameterType.BOOL:
+                                            ConsoleCommand<bool> boolcommand = new ConsoleCommand<bool>(attribute.Id, attribute.Description, attribute.Format, (bool parameter) =>
+                                            {
+                                                method.Invoke(null, new object[] { parameter });
+                                            });
+
+                                            commandList.Add(boolcommand);
+                                            break;
+                                        case ParameterType.STRING:
+                                            ConsoleCommand<string> stringcommand = new ConsoleCommand<string>(attribute.Id, attribute.Description, attribute.Format, (string parameter) =>
+                                            {
+                                                method.Invoke(null, new object[] { parameter });
+                                            });
+
+                                            commandList.Add(stringcommand);
+                                            break;
+                                    default:
+                                        Debug.LogError($"[CONSOLE] Unexpected ParameterType for command with Id {attribute.Id}: {attribute.Parameter}");
+                                        break;
+                                }
+                                }
+                                else
+                                {
+                                    Debug.LogError($"[CONSOLE] Non-static method '{method.Name}' in class '{type.FullName}' cannot be used as a console command. Skipping.");
+                                    #region Working... 
+                                    //object instance = Activator.CreateInstance(type);
+                                    //switch (attribute.Parameter)
+                                    //{
+                                    //    case ParameterType.NULL:
+                                    //        ConsoleCommand nullcommand = new ConsoleCommand(attribute.Id, attribute.Description, attribute.Format, () =>
+                                    //        {
+                                    //            method.Invoke(instance, null);
+                                    //        });
+
+                                    //        commandList.Add(nullcommand);
+                                    //        break;
+                                    //    case ParameterType.INT:
+                                    //        ConsoleCommand<int> intcommand = new ConsoleCommand<int>(attribute.Id, attribute.Description, attribute.Format, (int parameter) =>
+                                    //        {
+                                    //            method.Invoke(instance, new object[] { parameter });
+                                    //        });
+
+                                    //        commandList.Add(intcommand);
+                                    //        break;
+                                    //    case ParameterType.FLOAT:
+                                    //        ConsoleCommand<float> floatcommand = new ConsoleCommand<float>(attribute.Id, attribute.Description, attribute.Format, (float parameter) =>
+                                    //        {
+                                    //            method.Invoke(instance, new object[] { parameter });
+                                    //        });
+
+                                    //        commandList.Add(floatcommand);
+                                    //        break;
+                                    //    case ParameterType.BOOL:
+                                    //        ConsoleCommand<bool> boolcommand = new ConsoleCommand<bool>(attribute.Id, attribute.Description, attribute.Format, (bool parameter) =>
+                                    //        {
+                                    //            method.Invoke(instance, new object[] { parameter });
+                                    //        });
+
+                                    //        commandList.Add(boolcommand);
+                                    //        break;
+                                    //    case ParameterType.STRING:
+                                    //        ConsoleCommand<string> stringcommand = new ConsoleCommand<string>(attribute.Id, attribute.Description, attribute.Format, (string parameter) =>
+                                    //        {
+                                    //            method.Invoke(instance, new object[] { parameter });
+                                    //        });
+
+                                    //        commandList.Add(stringcommand);
+                                    //        break;
+                                    //    //default:
+                                    //    //    Debug.LogError($"[CONSOLE] Unexpected ParameterType for command with Id {attribute.Id}: {attribute.Parameter}");
+                                    //    //    break;
+                                    //}
+                                    #endregion
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError("[CONSOLE] Commands don`t support more that one parameter");
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void Update()
@@ -199,8 +296,8 @@ namespace sexee.DevConsole
                 return "No matching commands found.";
             }
         }
-
-        void ShowHelp()
+        [ConsoleCommandAttribute("help", "show all commands", "help", ParameterType.NULL)]
+        public static void Help()
         {
             GameObject help = Instantiate(outputText, outputparent.transform);
             string helplabel = "-- HELP --";
@@ -215,7 +312,7 @@ namespace sexee.DevConsole
                 string label = $"<color=#fafa37>{commandBase.CommandFormat}</color> <color=#ffffff> - {commandBase.CommandDescription}</color>";
 
                 go.GetComponentInChildren<TMP_Text>().text = label;
-            }       
+            }
         }
 
         public void Log(object log)
@@ -238,9 +335,10 @@ namespace sexee.DevConsole
             string label = log.ToString();
 
             go.GetComponentInChildren<TMP_Text>().text = $"<color=#FF0000>{log}</color>";
-        }    
+        }
 
-        void Clear()
+        [ConsoleCommandAttribute("clear", "claer console", "clear", ParameterType.NULL)]
+        public static void Clear()
         {
             for (int i = 0; i < outputparent.transform.childCount; i++)
             {
