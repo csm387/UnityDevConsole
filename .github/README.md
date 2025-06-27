@@ -40,6 +40,7 @@ public static void AddHp(int value)
  hp += value;
  Debug.Log($"Player HP increased by {value}");
 }
+```
 
 Attribute Field	Description
 
@@ -47,8 +48,6 @@ Attribute Field	Description
 "Add hp to player"	Description for help menu
 "addhp"	Usage example
 ParameterType.INT	Type of parameter (INT, FLOAT, etc.)
-
-```
 
 
 ---
