@@ -44,10 +44,10 @@ public static void AddHp(int value)
 
 Attribute Field	Description
 
-"addhp"	Command name
-"Add hp to player"	Description for help menu
-"addhp"	Usage example
-ParameterType.INT	Type of parameter (INT, FLOAT, etc.)
+"addhp"	- Command name
+"Add hp to player"	- Description for help menu
+"addhp"	- Usage example
+ParameterType.INT -	Type of parameter (INT, FLOAT, etc.)
 
 
 ---
